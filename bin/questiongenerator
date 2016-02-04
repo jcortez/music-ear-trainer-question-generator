@@ -1,0 +1,3 @@
+#!/usr/bin/env ruby
+
+#TODO: read in directory to write files to as command line option and call Ruby code that generates files.
