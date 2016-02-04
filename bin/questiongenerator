@@ -1,3 +1,7 @@
 #!/usr/bin/env ruby
+require 'questiongenerator/commandlineoptions'
 
-#TODO: read in directory to write files to as command line option and call Ruby code that generates files.
+#TODO:  call Ruby code that generates files.
+command_line_options = QuestionGenerator::CommandLineOptions.new
+command_line_options.parse(ARGV)
+puts "Generate dir: #{command_line_options.generate_dir}"
