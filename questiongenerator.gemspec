@@ -8,5 +8,5 @@ Gem::Specification.new do |s|
   s.files         = Dir['**/**']
   s.platform      = Gem::Platform::RUBY
   s.require_paths = ["lib"]
-  s.executables = ['questiongenerator']
+  s.executables   = ['questiongenerator']
 end

@@ -7,10 +7,10 @@ module QuestionGenerator
     # The default directory to generate all of the appropriate files in is the
     # current directory.
     DEFAULT_GENERATE_DIR = "."
-    attr_reader :generate_dir
+    attr_reader :dir_to_generate_files
 
     def initialize
-      @generate_dir = DEFAULT_GENERATE_DIR
+      @dir_to_generate_files = DEFAULT_GENERATE_DIR
     end
  
     # Parses the command line options given to the question generator.
@@ -21,7 +21,7 @@ module QuestionGenerator
           puts opts
         end
         opts.on("-d DIRECTORY", "directory to generate question files in (default will be the current directory)") do |dir|
-          @generate_dir = dir
+          @dir_to_generate_files = dir
         end
       end.parse!
     end
