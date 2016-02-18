@@ -9,4 +9,6 @@ Gem::Specification.new do |s|
   s.platform      = Gem::Platform::RUBY
   s.require_paths = ["lib"]
   s.executables   = ['questiongenerator']
+  s.required_ruby_version = '>=1.9.3'
+  s.add_runtime_dependency "midilib", [">=2.0.5"]
 end
