@@ -22,6 +22,12 @@ module QuestionGenerator
       a_sharp_b_flat: 10, b_c_flat: 11 }
     # Stores the number of times you have to rotate a chord to get an inversion.
     INVERSION_ROTATIONS = { root_pos: 0, first_inv: 1, second_inv: 2, third_inv: 3 }
+    # The MIDI notes for the C root position chords of the specified qualities.
+    C_ROOT_POS_CHORDS = { maj: [ 60, 64, 67 ], min: [ 60, 63, 67 ],
+      dim: [ 60, 63, 66 ], aug: [ 60, 64, 68 ], dom_seventh: [ 60, 64, 67, 70 ],
+      maj_seventh: [ 60, 64, 67, 71 ], min_seventh: [ 60, 63, 67, 70 ],
+      min_maj_seventh: [ 60, 63, 67, 71 ], half_dim_seventh: [ 60, 63, 66, 70 ],
+      dim_seventh: [ 60, 63, 66, 69 ], sus_2: [ 60, 62, 67 ], sus_4: [ 60, 65, 67 ] }
     private_constant :MIDI_FILE_BPM
     private_constant :MIDI_FILE_VOLUME
     private_constant :MIDI_FILE_VELOCITY
@@ -30,8 +36,7 @@ module QuestionGenerator
     private_constant :CHORD_INVERSIONS
     private_constant :NOTE_HALF_STEPS_ABOVE_C
     private_constant :INVERSION_ROTATIONS
-    #TODO: add constants for:
-    # - MIDI notes for all C root position chords (major,minor, etc.)
+    private_constant :C_ROOT_POS_CHORDS
 
     def initialize(dir_to_generate_files = '.')
       @dir_to_generate_midi_files = dir_to_generate_files
@@ -39,12 +44,12 @@ module QuestionGenerator
 
   public
     # Generates all MIDI files for questions.
-    def generate_all_midi_files
+    def generate_all_midi_files #TODO: write tests for this method
       midi_file_id = 0
       for root in CHORD_ROOTS
         for quality in CHORD_QUALITIES
           for inversion in CHORD_INVERSIONS #TODO: only do third inversion chords for seventh chords.
-            chord_notes = [ 60, 64, 67 ] #TODO: get chord notes for c root chord quality
+            chord_notes = C_ROOT_POS_CHORDS[quality]
             chord_notes = transpose_chord_notes(chord_notes, root)
             chord_notes = generate_chord_inversion(chord_notes, inversion)
             midi_sequence = generate_chord_sequence(midi_file_id, chord_notes)
