@@ -11,4 +11,5 @@ Gem::Specification.new do |s|
   s.executables   = ['questiongenerator']
   s.required_ruby_version = '>=1.9.3'
   s.add_runtime_dependency "midilib", [">=2.0.5"]
+  s.add_runtime_dependency "nokogiri", [">=1.6.7.2"]
 end

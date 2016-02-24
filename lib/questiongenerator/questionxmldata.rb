@@ -1,5 +1,7 @@
 # Generates XML that stores information about the question data.
 
+require 'nokogiri'
+
 module QuestionGenerator
   class QuestionXMLData
 
@@ -19,10 +21,43 @@ module QuestionGenerator
     # will be written to the XML file.
     CHORD_INVERSION_NAMES = { root_pos: "Root Position", first_inv: "First Inversion",
       second_inv: "Second Inversion", third_inv: "Third Inversion" }
+    XML_FILE_NAME = "question_data.xml"
     private_constant :CHORD_ROOT_NAMES
     private_constant :CHORD_QUALITY_NAMES
     private_constant :CHORD_INVERSION_NAMES
+    private_constant :XML_FILE_NAME
 
+    def initialize(dir_to_generate_files = '.')
+      @dir_to_generate_xml = dir_to_generate_files
+      @questions = Array.new
+    end
+
+  public
+    # Adds a question to be written to the XML file.
+    def add_question(question)
+      @questions << question
+    end
+
+    # Writes the question data XML to a file. The file will be saved to the
+    # directory set earlier or the current directory if this was not set.
+    def write_question_data_xml
+      builder = Nokogiri::XML::Builder.new do |xml|
+        xml.questions {
+          @questions.each do |question|
+            xml.question {
+              xml.questionMidiFileName question.question_midi_filename
+              xml.answer {
+                xml.chordRoot CHORD_ROOT_NAMES[question.answer.chord_root]
+                xml.chordQuality CHORD_QUALITY_NAMES[question.answer.chord_quality]
+                xml.chordInversion CHORD_INVERSION_NAMES[question.answer.chord_inversion]
+              }
+            }
+          end
+        }
+      end
+
+      File.open("#{@dir_to_generate_xml}/#{XML_FILE_NAME}", 'w') { |file| file.print(builder.to_xml) }
+    end
 
   end
 end
