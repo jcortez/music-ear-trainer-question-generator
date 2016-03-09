@@ -3,6 +3,7 @@
 
 require 'midilib/sequence'
 require 'midilib/consts'
+require 'questiongenerator/question'
 
 module QuestionGenerator
   class MIDIFileGenerator
@@ -38,8 +39,9 @@ module QuestionGenerator
     private_constant :INVERSION_ROTATIONS
     private_constant :C_ROOT_POS_CHORDS
 
-    def initialize(dir_to_generate_files = '.')
+    def initialize(dir_to_generate_files = '.', question_xml_data)
       @dir_to_generate_midi_files = dir_to_generate_files
+      @question_xml_data = question_xml_data
     end
 
   public
@@ -53,8 +55,11 @@ module QuestionGenerator
             chord_notes = transpose_chord_notes(chord_notes, root)
             chord_notes = generate_chord_inversion(chord_notes, inversion)
             midi_sequence = generate_chord_sequence(midi_file_id, chord_notes)
-            write_sequence_to_file(midi_file_id, midi_sequence)
-            puts "#{midi_file_id}.mid: #{root} #{quality} #{inversion}" #TODO: write data to XML using QuestionXMLData object
+            midi_file_name = "#{midi_file_id}.mid"
+            write_sequence_to_file(midi_file_name, midi_sequence)
+
+            question = Question.new(midi_file_name, Chord.new(root, quality, inversion))
+            @question_xml_data.add_question(question)
             midi_file_id += 1
           end
         end
@@ -87,8 +92,8 @@ module QuestionGenerator
     end
 
     # Writes a MIDI::Sequence to a MIDI file.
-    def write_sequence_to_file(midi_file_id, sequence)
-      File.open("#{@dir_to_generate_midi_files}/#{midi_file_id}.mid", 'wb') { |file| sequence.write(file) }
+    def write_sequence_to_file(midi_file_name, sequence)
+      File.open("#{@dir_to_generate_midi_files}/#{midi_file_name}", 'wb') { |file| sequence.write(file) }
     end
 
     # Transposes the chord notes to be a new chord at the new root specified. A
