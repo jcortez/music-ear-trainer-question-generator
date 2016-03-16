@@ -46,7 +46,7 @@ module QuestionGenerator
 
   public
     # Generates all MIDI files for questions.
-    def generate_all_midi_files #TODO: write tests for this method
+    def generate_all_midi_files
       midi_file_id = 0
       for root in CHORD_ROOTS
         for quality in CHORD_QUALITIES
@@ -111,8 +111,10 @@ module QuestionGenerator
       num_of_rotations = INVERSION_ROTATIONS[inversion]
       return chord_notes_inversion if num_of_rotations <= 0
 
-      for i in 0..num_of_rotations-1
-        chord_notes_inversion[i] += 12
+      num_of_rotations.times do
+        temp = chord_notes_inversion.shift
+        temp += 12
+        chord_notes_inversion << temp
       end
 
       chord_notes_inversion
