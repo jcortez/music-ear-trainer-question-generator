@@ -50,7 +50,13 @@ module QuestionGenerator
       midi_file_id = 0
       for root in CHORD_ROOTS
         for quality in CHORD_QUALITIES
-          for inversion in CHORD_INVERSIONS #TODO: only do third inversion chords for seventh chords.
+          for inversion in CHORD_INVERSIONS
+            # Third inversions are not generated for chords that are not seventh
+            # chords.
+            if (inversion == :third_inv and C_ROOT_POS_CHORDS[quality].length < 4)
+              next
+            end
+
             chord_notes = C_ROOT_POS_CHORDS[quality]
             chord_notes = transpose_chord_notes(chord_notes, root)
             chord_notes = generate_chord_inversion(chord_notes, inversion)

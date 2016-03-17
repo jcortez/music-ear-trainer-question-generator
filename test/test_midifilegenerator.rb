@@ -6,7 +6,7 @@ require 'questiongenerator/midifilegenerator'
 require 'midilib/io/seqreader'
 
 class TestMidiFileGenerator < Test::Unit::TestCase
-  NUM_OF_MIDI_FILES_GENERATED = 576
+  NUM_OF_MIDI_FILES_GENERATED = 504
   private_constant :NUM_OF_MIDI_FILES_GENERATED    
 
 public
@@ -38,6 +38,21 @@ public
     check_midi_file_generated_correctly(xml_questions, "B/Cb", "Minor", "First Inversion", [74, 78, 83, 74, 78, 83])
     check_midi_file_generated_correctly(xml_questions, "C#/Db", "Sus 4", "Second Inversion", [68, 73, 78, 68, 73, 78])
     check_midi_file_generated_correctly(xml_questions, "G#/Ab", "Half Diminished Seventh", "Third Inversion", [78, 80, 83, 86, 78, 80, 83, 86])
+  end
+
+  # Tests that the generate_all_midi_files method generates third inversion
+  # chords only for the appropriate chords.
+  def test_generate_all_midi_files_third_inversion
+    @midi_file_generator.generate_all_midi_files
+    @xml_data.write_question_data_xml
+    generated_xml = File.open("#{TestUtils::GENERATE_QUESTION_FILES_DIR}/question_data.xml") { |file| Nokogiri::XML(file) }
+    xml_questions = generated_xml.xpath("/questions/question")
+
+    # This third inversion chord should be generated.
+    check_midi_file_generated_correctly(xml_questions, "G", "Major Seventh", "Third Inversion", [78, 79, 83, 86, 78, 79, 83, 86])
+    # This third inversion chord should not be generated.
+    chord = xml_questions.xpath("answer[chordRoot/text()='F' and chordQuality/text()='Diminished' and chordInversion/text()='Third Inversion']")
+    assert_equal(0, chord.length)
   end
 
 private
