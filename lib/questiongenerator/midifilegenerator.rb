@@ -89,7 +89,9 @@ module QuestionGenerator
       track.events << MIDI::Controller.new(0, MIDI::CC_VOLUME, MIDI_FILE_VOLUME)
 
       note_length = sequence.note_to_delta('whole')
-      track.events << MIDI::ProgramChange.new(0,1,0)
+      # At this time, MIDI.js doesn't like this program change message.
+      # Temporarily commenting this out until this is fixed in MIDI.js.
+      #track.events << MIDI::ProgramChange.new(0,1,0)
       chord_notes.each { |note| track.events << MIDI::NoteOn.new(0, note, MIDI_FILE_VELOCITY, 0) }
       chord_notes.each { |note| track.events << MIDI::NoteOff.new(0, note, MIDI_FILE_VELOCITY, note_length) }
 

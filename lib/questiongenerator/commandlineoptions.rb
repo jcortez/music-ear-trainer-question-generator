@@ -12,13 +12,14 @@ module QuestionGenerator
     def initialize
       @dir_to_generate_files = DEFAULT_GENERATE_DIR
     end
- 
+
     # Parses the command line options given to the question generator.
     def parse(argv)
       OptionParser.new do |opts|
         opts.banner = "Usage: questiongenerator [options]"
         opts.on("-h", "prints this help message") do
           puts opts
+          exit 0
         end
         opts.on("-d DIRECTORY", "directory to generate question files in (default will be the current directory)") do |dir|
           @dir_to_generate_files = dir
