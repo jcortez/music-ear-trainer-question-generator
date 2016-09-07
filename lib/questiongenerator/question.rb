@@ -1,11 +1,12 @@
 module QuestionGenerator
   # Represents information for a chord ear trainer question.
   class Question
-    attr_accessor :question_midi_filename, :answer
+    attr_accessor :question_midi_filename, :answer, :midi_notes
 
-    def initialize(filename, answer)
+    def initialize(filename, answer, notes)
       @question_midi_filename = filename
       @answer = answer
+      @midi_notes = notes
     end
 
   end

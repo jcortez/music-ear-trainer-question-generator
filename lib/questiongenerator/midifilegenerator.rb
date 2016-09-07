@@ -64,7 +64,7 @@ module QuestionGenerator
             midi_file_name = "#{midi_file_id}.mid"
             write_sequence_to_file(midi_file_name, midi_sequence)
 
-            question = Question.new(midi_file_name, Chord.new(root, quality, inversion))
+            question = Question.new(midi_file_name, Chord.new(root, quality, inversion), chord_notes)
             @question_xml_data.add_question(question)
             midi_file_id += 1
           end

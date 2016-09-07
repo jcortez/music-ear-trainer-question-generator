@@ -51,6 +51,9 @@ module QuestionGenerator
                 xml.chordQuality CHORD_QUALITY_NAMES[question.answer.chord_quality]
                 xml.chordInversion CHORD_INVERSION_NAMES[question.answer.chord_inversion]
               }
+              xml.midiNotes {
+                question.midi_notes.each { |note| xml.note note }
+              }
             }
           end
         }

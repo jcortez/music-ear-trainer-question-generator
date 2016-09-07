@@ -7,7 +7,7 @@ require 'midilib/io/seqreader'
 
 class TestMidiFileGenerator < Test::Unit::TestCase
   NUM_OF_MIDI_FILES_GENERATED = 504
-  private_constant :NUM_OF_MIDI_FILES_GENERATED    
+  private_constant :NUM_OF_MIDI_FILES_GENERATED
 
 public
   def setup
@@ -58,23 +58,34 @@ public
 private
   # Read a MIDI file using data from the XML file and check that it generated
   # the notes correctly for a specific chord.
-  def check_midi_file_generated_correctly(xml_questions, chord_root, chord_quality, chord_inversion, correct_midi_notes)
+  def check_midi_file_generated_correctly(xml_questions, chord_root, chord_quality, chord_inversion, correct_midi_note_events)
     midi_file_name = xml_questions.at_xpath("answer[chordRoot/text()='#{chord_root}' and chordQuality/text()='#{chord_quality}' and chordInversion/text()='#{chord_inversion}']/../questionMidiFileName").text
+    stored_midi_notes = xml_questions.at_xpath("answer[chordRoot/text()='#{chord_root}' and chordQuality/text()='#{chord_quality}' and chordInversion/text()='#{chord_inversion}']/../midiNotes").text.split.map { |note| note.to_i }
     assert_equal(false, midi_file_name.strip.empty?)
     assert(File.exist?("#{TestUtils::GENERATE_QUESTION_FILES_DIR}/#{midi_file_name}"))
 
     midi_sequence = MIDI::Sequence.new
     File.open("#{TestUtils::GENERATE_QUESTION_FILES_DIR}/#{midi_file_name}", 'rb') { |file| midi_sequence.read(file) }
-    generated_midi_notes = Array.new
+    generated_midi_note_events = Array.new
     midi_sequence.each do |track|
       track.each do |event|
         if MIDI::NoteEvent === event
-          generated_midi_notes << event.note
+          generated_midi_note_events << event.note
         end
       end
     end
 
-    assert_equal(correct_midi_notes, generated_midi_notes)
+    assert_equal(correct_midi_note_events, generated_midi_note_events)
+
+    # Checking the MIDI notes stored in the XML file by only looking at the note
+    # on event for the MIDI notes.
+    if correct_midi_note_events.length.eql? 6
+      # First/second inversion chord testing.
+      assert_equal(correct_midi_note_events[0, 3], stored_midi_notes)
+    else
+      # Third inversion chord testing.
+      assert_equal(correct_midi_note_events[0, 4], stored_midi_notes)
+    end
   end
 
 end
